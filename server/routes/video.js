@@ -60,7 +60,6 @@ router.post("/thumbnail", (req, res) => {
   //req.body.url업로드된 비디오파일을 가져온다
   ffmpeg(req.body.url)
     .on("filenames", function (filenames) {
-      console.log("will generate" + filenames.json(","));
       console.log(filenames);
 
       filePath = "uploads/thumbnails/" + filenames[0];
@@ -70,7 +69,6 @@ router.post("/thumbnail", (req, res) => {
       return res.json({
         success: true,
         url: filePath,
-
         fileDuration: fileDuration,
       });
     })
@@ -78,7 +76,7 @@ router.post("/thumbnail", (req, res) => {
       console.log(err);
       return res.json({ success: false, err });
     })
-    .screensshots({
+    .screenshots({
       count: 3,
       folder: "uploads/thumbnails",
       size: "320x240",

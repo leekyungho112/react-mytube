@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Typography, Button, Form, message, Input, Icon } from "antd";
 import Dropzone from "react-dropzone";
-import Axios from "axios";
+import axios from "axios";
 
 const { TextArea } = Input;
 const { Title } = Typography;
@@ -22,6 +22,9 @@ function VideoUploadPage() {
   const [Description, setDescription] = useState("");
   const [Private, setPrivate] = useState(0);
   const [Category, setCategory] = useState("Film & Animation");
+  const [FilePath, setFilePath] = useState("");
+  const [Duration, setDuration] = useState("");
+  const [ThumbnailPath, setThumbnailPath] = useState("");
 
   const onTitleChange = (e) => {
     setVideoTitle(e.currentTarget.value);
@@ -48,7 +51,7 @@ function VideoUploadPage() {
     };
     formData.append("file", files[0]);
     console.log(files);
-    Axios.post("/api/video/uploadfiles", formData, config).then((res) => {
+    axios.post("/api/video/uploadfiles", formData, config).then((res) => {
       if (res.data.success) {
         console.log(res.data);
 
@@ -57,9 +60,12 @@ function VideoUploadPage() {
           fileName: res.data.fileName,
         };
 
-        Axios.post("/api/video/thumbnail", variable).then((res) => {
+        setFilePath(res.data.url);
+
+        axios.post("/api/video/thumbnail", variable).then((res) => {
           if (res.data.success) {
-            console.log(res.data);
+            setDuration(res.data.fileDuration);
+            setThumbnailPath(res.data.url);
           } else {
             alert("썸네일 생성에 실패했습니다.");
           }
@@ -97,9 +103,14 @@ function VideoUploadPage() {
           </Dropzone>
 
           {/* Thumbnail*/}
-          <div>
-            <img src alt />
-          </div>
+          {ThumbnailPath && (
+            <div>
+              <img
+                src={`http://localhost:5000/${ThumbnailPath}`}
+                alt="thumbnail"
+              />
+            </div>
+          )}
         </div>
         <br />
         <br />
