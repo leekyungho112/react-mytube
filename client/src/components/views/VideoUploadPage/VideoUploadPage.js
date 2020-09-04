@@ -50,6 +50,20 @@ function VideoUploadPage() {
     console.log(files);
     Axios.post("/api/video/uploadfiles", formData, config).then((res) => {
       if (res.data.success) {
+        console.log(res.data);
+
+        let variable = {
+          url: res.data.url,
+          fileName: res.data.fileName,
+        };
+
+        Axios.post("/api/video/thumbnail", variable).then((res) => {
+          if (res.data.success) {
+            console.log(res.data);
+          } else {
+            alert("썸네일 생성에 실패했습니다.");
+          }
+        });
       } else {
         alert("비디오 업로드에 실패했습니다.");
       }
