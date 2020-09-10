@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Axios from "axios";
 import { useSelector } from "react-redux";
 import SingleComment from "./SingleComment";
-import { Button, Input } from "antd";
+import { Button, Input, Icon } from "antd";
 import ReplyComment from "./ReplyComment";
 
 const { TextArea } = Input;
@@ -32,6 +32,28 @@ function Comment(props) {
       }
     });
   };
+
+  const onDeleteComment = (targetedCommentId) => {
+    let confirmRes = window.confirm("정말 이 글을 삭제하시길 원하시나요 ?");
+
+    if (confirmRes) {
+      const variables = {
+        commentId: targetedCommentId,
+      };
+      console.log(variables);
+
+      Axios.post("/api/comment/deleteComment", variables).then((res) => {
+        if (res.data.success) {
+          console.log(res.data);
+          setCommentValue("");
+          props.refreshDeleteFunction(res.data.deletedCommentId);
+        } else {
+          alert("댓글 지우기를 실패 했습니다.");
+        }
+      });
+    }
+  };
+
   return (
     <div>
       <br />
@@ -39,19 +61,26 @@ function Comment(props) {
       <hr />
 
       {/* Comment Lists */}
+
       {props.commentLists &&
         props.commentLists.map(
           (comment, index) =>
             !comment.responseTo && (
               <React.Fragment key={comment._id}>
+                <span onClick={() => onDeleteComment(comment._id)}>
+                  <Icon type="delete" />
+                </span>
                 <SingleComment
                   refreshFunction={props.refreshFunction}
+                  refreshDeleteFunction={props.refreshDeleteFunction}
                   key={index}
                   comment={comment}
                   postId={props.postId}
                 />
+
                 <ReplyComment
                   refreshFunction={props.refreshFunction}
+                  refreshDeleteFunction={props.refreshDeleteFunction}
                   parentCommentId={comment._id}
                   commentLists={props.commentLists}
                   postId={props.postId}

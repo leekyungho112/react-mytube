@@ -20,12 +20,14 @@ function ReplyComment(props) {
           <div style={{ width: "80%", marginLeft: "40px" }}>
             <SingleComment
               refreshFunction={props.refreshFunction}
+              refreshDeleteFunction={props.refreshDeleteFunction}
               key={index}
               comment={comment}
               postId={props.postId}
             />
             <ReplyComment
               refreshFunction={props.refreshFunction}
+              refreshDeleteFunction={props.refreshDeleteFunction}
               commentLists={props.commentLists}
               postId={props.postId}
               parentCommentId={comment._id}

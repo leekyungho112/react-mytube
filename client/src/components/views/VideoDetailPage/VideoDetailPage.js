@@ -36,6 +36,10 @@ function VideoDetailPage(props) {
     setComments(Comments.concat(newComment));
   };
 
+  const refreshDeleteFunction = (newComment) => {
+    setComments(Comments.splice(newComment - 1));
+  };
+
   if (VideoDetail.writer) {
     const subscribeButton = VideoDetail.writer._id !==
       localStorage.getItem("userId") && (
@@ -76,6 +80,7 @@ function VideoDetailPage(props) {
             </List.Item>
             {/*Comments */}
             <Comment
+              refreshDeleteFunction={refreshDeleteFunction}
               refreshFunction={refreshFunction}
               commentLists={Comments}
               postId={videoId}

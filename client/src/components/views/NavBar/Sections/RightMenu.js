@@ -36,6 +36,9 @@ function RightMenu(props) {
         <Menu.Item key="upload">
           <a href="/video/upload">Video</a>
         </Menu.Item>
+        <Menu.Item key="profile">
+          <a href="/users/profile">Profile</a>
+        </Menu.Item>
         <Menu.Item key="logout">
           <a onClick={logoutHandler}>Logout</a>
         </Menu.Item>
