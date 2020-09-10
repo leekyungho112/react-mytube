@@ -5,7 +5,10 @@ function Subscribee(props) {
   const [SubscribeNumber, setSubscribeNumber] = useState(0);
   const [Subscribed, setSubscribed] = useState(false);
   useEffect(() => {
-    let variable = { userTo: props.userTo };
+    let variable = {
+      userTo: props.userTo,
+      userFrom: props.userFrom,
+    };
 
     Axios.post("/api/subscribe/subscribeNumber", variable).then((res) => {
       if (res.data.success) {
@@ -17,7 +20,7 @@ function Subscribee(props) {
 
     let subscribedVariable = {
       userTo: props.userTo,
-      userFrom: localStorage.getItem("userId"),
+      userFrom: props.userFrom,
     };
 
     Axios.post("/api/subscribe/subscribed", subscribedVariable).then((res) => {

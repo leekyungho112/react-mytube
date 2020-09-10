@@ -20,6 +20,7 @@ function LikeDislikes(props) {
   useEffect(() => {
     Axios.post("/api/like/getLikes", variables).then((res) => {
       if (res.data.success) {
+        console.log("getLikes", res.data.likes);
         // 얼마나 많은 좋아요를 받았는지
         setLikes(res.data.likes.length);
         // 이미 그 좋아요를 눌렀는지
@@ -34,6 +35,7 @@ function LikeDislikes(props) {
     });
 
     Axios.post("/api/like/getDislikes", variables).then((res) => {
+      console.log("getDislike", res.data);
       if (res.data.success) {
         // 얼마나 많은 싫어요를 받았는지
         setDisLikes(res.data.dislikes.length);
@@ -48,6 +50,65 @@ function LikeDislikes(props) {
       }
     });
   }, []);
+
+  const onLike = () => {
+    // 좋아요 버튼이 아직 클릭이 안되어 있을때
+    if (LikesAction === null) {
+      Axios.post("/api/like/upLike", variables).then((res) => {
+        if (res.data.success) {
+          setLikes(Likes + 1);
+          setLikesAction("liked");
+          if (DisLikesAction !== null) {
+            setDisLikesAction(null);
+            setDisLikes(DisLikes - 1);
+          }
+        } else {
+          alert("좋아요를 올리지 못했습니다.");
+        }
+      });
+    } else {
+      //좋아요 버튼이 클릭이 되어있을때
+      Axios.post("/api/like/unLike", variables).then((res) => {
+        if (res.data.success) {
+          setLikes(Likes - 1);
+          setLikesAction(null);
+        } else {
+          alert("좋아요를 내리지 못했습니다.");
+        }
+      });
+    }
+  };
+
+  const onDisLike = () => {
+    //싫어요가 클릭이 이미 되어있을때
+    if (DisLikesAction !== null) {
+      Axios.post("/api/like/unDislike", variables).then((res) => {
+        if (res.data.success) {
+          setDisLikes(DisLikes - 1);
+          setDisLikesAction(null);
+        } else {
+          alert("싫어요를 지우지 못했습니다.");
+        }
+      });
+    } else {
+      //클릭 되어 있지 않을때
+
+      Axios.post("/api/like/upDislike", variables).then((res) => {
+        if (res.data.success) {
+          setDisLikes(DisLikes + 1);
+          setDisLikesAction("disliked");
+
+          if (LikesAction !== null) {
+            setLikesAction(null);
+            setLikes(Likes - 1);
+          }
+        } else {
+          alert("싫어요를 지우지 못했습니다.");
+        }
+      });
+    }
+  };
+
   return (
     <div>
       <span key="comment-basic-like">
@@ -55,7 +116,7 @@ function LikeDislikes(props) {
           <Icon
             type="like"
             theme={LikesAction === "liked" ? "filled" : "outlined"}
-            onClick
+            onClick={onLike}
           />
         </Tooltip>
         <span style={{ paddingLeft: "8px", cursor: "auto" }}> {Likes} </span>
@@ -66,7 +127,7 @@ function LikeDislikes(props) {
           <Icon
             type="dislike"
             theme={DisLikesAction === "disliked" ? "filled" : "outlined"}
-            onClick
+            onClick={onDisLike}
           />
         </Tooltip>
         <span style={{ paddingLeft: "8px", cursor: "auto" }}> {DisLikes} </span>
