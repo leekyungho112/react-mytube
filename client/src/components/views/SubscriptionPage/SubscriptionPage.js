@@ -60,7 +60,7 @@ function SubscriptionPage() {
 
   return (
     <div style={{ width: "85%", margin: "3rem auto" }}>
-      <Title level={2}>Recommended</Title>
+      <Title level={2}>구독페이지</Title>
       <hr />
       <Row gutter={[32, 16]}>{renderCards}</Row>
     </div>
